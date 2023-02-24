@@ -16,11 +16,10 @@ public class LevenshteinDiff implements Diff {
         CacheHolder[][] cache = new CacheHolder[2][m];
         Arrays.fill(cache[0], NULL);
         cache[1][0] = NULL;
+        CacheHolder[] prevCacheLine = cache[0];
+        CacheHolder[] currentCacheLine = cache[1];
 
         for (int i = 1; i < n; i++) {
-            final CacheHolder[] prevCacheLine = cache[(i + 1) % 2];
-            final CacheHolder[] currentCacheLine = cache[i % 2];
-
             for (int j = 1; j < m; j++) {
                 final int prevJ = j - 1;
 
@@ -44,6 +43,10 @@ public class LevenshteinDiff implements Diff {
                     }
                 }
             }
+
+            CacheHolder [] temp = prevCacheLine;
+            prevCacheLine = currentCacheLine;
+            currentCacheLine = temp;
         }
 
         int[][] result = new int[Math.min(sequencePair.getLength1(), sequencePair.getLength2())][];
