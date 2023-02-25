@@ -50,9 +50,15 @@ public class LevenshteinDiff implements Diff {
         for (int i = sequencePair.getLength1(), j = sequencePair.getLength2();
              i > 0 && j > 0; ) {
             switch (current.side) {
-                case C -> result[--index] = new int[]{--i, --j};
-                case A -> i--;
-                case B -> j--;
+                case C:
+                    result[--index] = new int[]{--i, --j};
+                    break;
+                case A:
+                    i--;
+                    break;
+                case B:
+                    j--;
+                    break;
             }
             current = current.prev;
         }
@@ -73,6 +79,15 @@ public class LevenshteinDiff implements Diff {
         };
     }
 
-    private record CacheHolder(int count, int side, CacheHolder prev) {
+    private static class CacheHolder {
+        public final int count;
+        public final int side;
+        public final CacheHolder prev;
+
+        public CacheHolder(int count, int side, CacheHolder prev) {
+            this.count = count;
+            this.side = side;
+            this.prev = prev;
+        }
     }
 }
