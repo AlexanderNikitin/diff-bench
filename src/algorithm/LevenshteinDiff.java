@@ -19,13 +19,11 @@ public class LevenshteinDiff implements Diff {
         CacheHolder[] prevCacheLine = cache[0];
         CacheHolder[] currentCacheLine = cache[1];
 
-        for (int i = 1; i < n; i++) {
+        for (int i = 1, prevI = 0; i < n; prevI = i++) {
             CacheHolder curIPrevJ = currentCacheLine[0];
-            for (int j = 1; j < m; j++) {
-                final int prevJ = j - 1;
-
+            for (int j = 1, prevJ = 0; j < m; prevJ = j++) {
                 CacheHolder result;
-                if (sequencePair.equal(i - 1, prevJ)) {
+                if (sequencePair.equal(prevI, prevJ)) {
                     final CacheHolder prevIPrevJ = prevCacheLine[prevJ];
                     result = new CacheHolder(prevIPrevJ.count + 1, C, prevIPrevJ);
                 } else {
