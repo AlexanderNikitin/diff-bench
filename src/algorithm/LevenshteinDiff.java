@@ -20,23 +20,25 @@ public class LevenshteinDiff implements Diff {
         CacheHolder[] currentCacheLine = cache[1];
 
         for (int i = 1; i < n; i++) {
+            CacheHolder curIPrevJ = currentCacheLine[0];
             for (int j = 1; j < m; j++) {
                 final int prevJ = j - 1;
 
+                CacheHolder result;
                 if (sequencePair.equal(i - 1, prevJ)) {
                     final CacheHolder prevIPrevJ = prevCacheLine[prevJ];
-                    currentCacheLine[j] = new CacheHolder(prevIPrevJ.count + 1, C, prevIPrevJ);
+                    result = new CacheHolder(prevIPrevJ.count + 1, C, prevIPrevJ);
                 } else {
                     final CacheHolder prevICurJ = prevCacheLine[j];
-                    final CacheHolder curIPrevJ = currentCacheLine[prevJ];
                     final int a = prevICurJ.count;
                     final int b = curIPrevJ.count;
-                    if (a > b || a == b && i < j) {
-                        currentCacheLine[j] = new CacheHolder(a, A, prevICurJ);
-                    } else {
-                        currentCacheLine[j] = new CacheHolder(b, B, curIPrevJ);
-                    }
+                    result = a > b || a == b && i < j ?
+                            new CacheHolder(a, A, prevICurJ) :
+                            new CacheHolder(b, B, curIPrevJ);
                 }
+
+                currentCacheLine[j] = result;
+                curIPrevJ = result;
             }
 
             CacheHolder[] temp = prevCacheLine;
